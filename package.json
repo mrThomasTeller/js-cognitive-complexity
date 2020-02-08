@@ -1,0 +1,57 @@
+{
+  "name": "js-cognitive-complexity",
+  "description": "Shows cognitive complexity of JavaScript/TypeScript code using corresponding sonarjs library",
+  "version": "0.0.1",
+  "publisher": "mrThomasTeller",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.32.0"
+  },
+  "repository": {
+    "url": "https://github.com/Microsoft/vscode-extension-samples"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "configuration": [
+      {
+        "title": "Cognitive Complexity",
+        "properties": {
+          "js-cognitive-complexity.minComplexity": {
+            "type": "number",
+            "default": 16,
+            "description": "Minimal complexity rate of function which should be shown",
+            "scope": "window"
+          }
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "lint": "tslint -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/eslint": "^6.1.8",
+    "@types/fs-extra-promise": "^1.0.8",
+    "@types/ramda": "^0.26.41",
+    "@types/react": "^16.9.19",
+    "@typescript-eslint/parser": "^2.19.0",
+    "@types/node": "^8.9.1",
+    "@types/vscode": "^1.32.0",
+    "fs-extra-promise": "^1.0.1"
+  },
+  "dependencies": {
+    "eslint": "^6.8.0",
+    "eslint-plugin-sonarjs": "^0.5.0",
+    "ramda": "^0.27.0",
+    "typescript": "^3.5.1"
+  }
+}
