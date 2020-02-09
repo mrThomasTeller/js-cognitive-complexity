@@ -3,6 +3,7 @@ import calcComplexity from './calcComplexity';
 import { memoizeWith, groupBy, values, sum } from 'ramda';
 import * as path from 'path';
 import { funcComplexityColor, detailsComplexityColor } from './constants';
+import { log } from './logger';
 
 const editorToDecorationsMap = new Map<
     vscode.TextEditor,
@@ -13,11 +14,18 @@ const editorToDecorationsMap = new Map<
 export function activate(context: vscode.ExtensionContext) {
     let timeout: NodeJS.Timer | undefined = undefined;
     let activeEditor = vscode.window.activeTextEditor;
+    // todo another way to detect js?
+    const isJsTsFile = (fileName: string) =>
+        ['.js', '.ts', '.jsx', '.tsx'].includes(path.extname(fileName));
+
+    log('activate');
 
     function updateDecorations() {
-        if (!activeEditor) {
+        if (!activeEditor || !isJsTsFile(activeEditor.document.fileName)) {
             return;
         }
+
+        log('start update decorations');
 
         const prevDecorationsMap = editorToDecorationsMap.get(activeEditor);
         if (prevDecorationsMap) {
@@ -44,11 +52,15 @@ export function activate(context: vscode.ExtensionContext) {
         const minComplexity = vscode.workspace
             .getConfiguration()
             .get<number>('js-cognitive-complexity.minComplexity');
+
+        log('before complexity data calculated');
         const complexityData = calcComplexity(
             text,
             activeEditor.document.fileName,
             minComplexity || 0
         );
+        log('complexity data calculated');
+
         complexityData.forEach(complexity => {
             const functionComplexityDecoration: vscode.DecorationOptions = {
                 range: new vscode.Range(
@@ -85,6 +97,8 @@ export function activate(context: vscode.ExtensionContext) {
         for (const [type, decorations] of decorationsMap.entries()) {
             activeEditor.setDecorations(type, decorations);
         }
+        log('complexity data rendered');
+
         editorToDecorationsMap.set(activeEditor, decorationsMap);
     }
 

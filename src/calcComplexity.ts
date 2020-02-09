@@ -1,5 +1,6 @@
 import * as eslint from 'eslint';
 import * as path from 'path';
+import { log } from './logger';
 const rule: eslint.Rule.RuleModule = require('eslint-plugin-sonarjs/lib/rules/cognitive-complexity.js');
 
 type IComplexityDetails = {
@@ -62,10 +63,15 @@ const cli = new eslint.CLIEngine({
         'sonarjs/cognitive-complexity': ['error', 0, 'sonar-runtime']
     }
 });
+log('eslint cli created from ' + __dirname);
 
 export default function calcComplexity(source: string, fileName: string, minComplexity: number) {
     minComplexity_ = minComplexity;
     functionsComplexity = [];
-    cli.executeOnText(source, fileName);
+    try {
+        cli.executeOnText(source, fileName);
+    } catch (e) {
+        log('error message: ' + e.message);
+    }
     return functionsComplexity;
 }
